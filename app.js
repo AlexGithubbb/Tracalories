@@ -1,14 +1,19 @@
 // Storage Controller
 
-
-
 //Item Controller
 const ItemCtrl = (function() {
-  const item = function(id, name, calories) {
-    this.id = id;
-    this.name = name;
-    this.calories = calories;
-  };
+  class item {
+    constructor(id, name, calories) {
+      this.id = id;
+      this.name = name;
+      this.calories = calories;
+    }
+  }
+  // const item = function(id, name, calories) {
+  //   this.id = id;
+  //   this.name = name;
+  //   this.calories = calories;
+  // };
   const data = {
     items: [
       { id: 0, name: 'Ice cream', calories: 1000 },
@@ -21,32 +26,54 @@ const ItemCtrl = (function() {
 
   // Public methods
   return {
-    logData: function (){
+    logData: function() {
       console.log(data);
+    },
+    getItems: function() {
+      return data.items;
     }
-  }
+    // logData : data
+  };
 })();
-
-
-
 
 // UI Controller
-const UICtrl = (function(){
+const UICtrl = (function() {
 
-  // Public methods
+const UISelector = {
+  id: '#item-list'
+}
+  // public methods
   return {
-
-  }
+    populateItemList: function(items) {
+      // console.log(items);
+      let html = '';
+      items.forEach(item => {
+        html += `<li class="collection-item" id="item-${item.id}">
+          <strong>${item.name}: </strong> <em>${item.calories}Calories</em>
+          <a href="#" class="secondary-content">
+            <i class="fa fa-pencil" id="edit-item" ></i>
+          </a>
+        </li>`;
+      });
+      // Insert list items
+      document.querySelector(UISelector.id).innerHTML = html;
+    }
+  };
 })();
-
 
 
 // App Controller
 const AppContrl = (function(ItemCtrl, UICtrl) {
+
+
   // Public methods
   return {
     init: function() {
-      console.log('Initialize the App...');
+      // console.log('Initialize the App...');
+      // fetch items from data structure
+      const items = ItemCtrl.getItems();
+      // Populate list with items
+      UICtrl.populateItemList(items);
     }
   };
 })(ItemCtrl, UICtrl);
