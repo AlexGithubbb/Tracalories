@@ -16,9 +16,9 @@ const ItemCtrl = (function() {
   // };
   const data = {
     items: [
-      { id: 0, name: 'Ice cream', calories: 1000 },
-      { id: 1, name: 'Chesse', calories: 800 },
-      { id: 2, name: 'Eggs', calories: 200 }
+      // { id: 0, name: 'Ice cream', calories: 1000 },
+      // { id: 1, name: 'Chesse', calories: 800 },
+      // { id: 2, name: 'Eggs', calories: 200 }
     ],
     currentItem: null,
     currentCalories: 0
@@ -83,7 +83,6 @@ const UICtrl = (function() {
     getSelectors: function(){
       return UISelectors;
     },
-
     getItemInput: function(){
       return {
         name: document.querySelector(UISelectors.itemNameInput).value,
@@ -91,6 +90,8 @@ const UICtrl = (function() {
       }
     },
     addListItem: function(newItem){
+      // show ul to block
+      document.querySelector(UISelectors.itemList).style.display = 'block';
       // create list item
       const li = document.createElement('li');
       // add class
@@ -104,6 +105,13 @@ const UICtrl = (function() {
           </a>`;
       // insert item
       document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li);
+    },
+    clearInput: function (){
+      document.querySelector(UISelectors.itemNameInput).value = '';
+      document.querySelector(UISelectors.itemCaloriesInput).value = '';
+    },
+    hideList: function (){
+      document.querySelector(UISelectors.itemList).style.display = 'none';
     }
   };
 })();
@@ -114,9 +122,7 @@ const AppContrl = (function(ItemCtrl, UICtrl) {
   const loadEventListener = function(){
     // get UI Selectors
     const UIselectors = UICtrl.getSelectors();
-    
     // add item event
-    // target to add meal button
    document.querySelector(UIselectors.addBtn).addEventListener('click', itemAddSubmit);
   }
 
@@ -129,7 +135,10 @@ const AppContrl = (function(ItemCtrl, UICtrl) {
       const newItem = ItemCtrl.addItem(input.name, input.calories);
       // Add item to UI list
       UICtrl.addListItem(newItem);
+      // clear input from UI
+      UICtrl.clearInput();
     }
+
     e.preventDefault();
   }
   // Public methods
@@ -138,8 +147,14 @@ const AppContrl = (function(ItemCtrl, UICtrl) {
       // console.log('Initialize the App...');
       // fetch items from data structure
       const items = ItemCtrl.getItems();
-      // Populate list with items
-      UICtrl.populateItemList(items);
+
+      // check if any item
+      if(items.length === 0){
+        UICtrl.hideList();
+      }else{
+        // Populate list with items
+        UICtrl.populateItemList(items);
+      }
 
       // load event listeners
       loadEventListener();
